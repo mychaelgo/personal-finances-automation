@@ -78,7 +78,7 @@ This library i used to get my transaction history in [Shopee](https://shopee.co.
 
 ### SimInvest
 
-Link: WIP
+Link: <https://github.com/mychaelgo/siminvest>
 
 Library for automatic investment using [SimInvest](https://www.siminvest.id/)
 
