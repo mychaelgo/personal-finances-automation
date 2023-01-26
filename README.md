@@ -72,7 +72,7 @@ This library i used to get my transaction history in [Tokopedia](https://www.tok
 
 ### Shopee
 
-Link: WIP
+Link: <https://github.com/mychaelgo/shopee>
 
 This library i used to get my transaction history in [Shopee](https://shopee.co.id/) and also ShopeFood
 
