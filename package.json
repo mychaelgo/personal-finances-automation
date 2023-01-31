@@ -1,0 +1,25 @@
+{
+  "name": "personal-finances-automation",
+  "version": "1.0.0",
+  "description": "- [Table of contents](#table-of-contents)   - [Personal finances automation](#personal-finances-automation)   - [Background](#background)   - [Tools \\& Application](#tools--application)     - [Google sheets](#google-sheets)     - [Pipedream](#pipedream)     - [Telegram](#telegram)   - [Scripts \\& library](#scripts--library)     - [BCA eStatement parser](#bca-estatement-parser)     - [BCA mobile banking](#bca-mobile-banking)     - [Gojek](#gojek)     - [Tokopedia](#tokopedia)     - [Shopee](#shopee)     - [SimInvest](#siminvest)     - [SPOT Sucor](#spot-sucor)",
+  "main": "index.js",
+  "scripts": {
+    "shopee:get-order": "node src/shopee-get-order.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mychaelgo/personal-finances-automation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mychaelgo/personal-finances-automation/issues"
+  },
+  "homepage": "https://github.com/mychaelgo/personal-finances-automation#readme",
+  "dependencies": {
+    "@mychaelgo/shopee": "1.0.3",
+    "axios": "1.3.0",
+    "date-fns": "2.29.3"
+  }
+}
