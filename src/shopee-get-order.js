@@ -8,7 +8,7 @@ const epochToDate = (timestamp) => {
 };
 
 const getPurchaseDate = (processingInfo) => {
-    let purchaseDate, purchaseDateFormatted; 
+    let purchaseDate, purchaseDateFormatted;
     processingInfo.info_rows.forEach(row => {
         if (row.info_label.text === 'label_odp_order_time') {
             purchaseDate = Number(row.info_value.value);
@@ -30,12 +30,13 @@ const generateProducts = (items) => {
 };
 
 const test = async () => {
+    console.log('Get last order id from Pipedream');
     const { data: db } = await getPersonalFinancesDataStores();
     const lastOrderKey = process.env.PIPEDREAM_DB_SHOPEE_LAST_ORDER_KEY;
     const lastOrderId = db[lastOrderKey];
 
-    console.log({ lastOrderId });
-    
+    // console.log({ lastOrderId });
+
     const configuration = new Configuration({
         basePath: 'https://shopee.co.id',
         baseOptions: {
@@ -45,9 +46,10 @@ const test = async () => {
         }
     });
     const shopeeMallApi = new ShopeeMallApi(configuration);
-    
+
+    console.log('Get order list');
     const orderList = await shopeeMallApi.getOrderList({
-        limit: 10,
+        limit: 100,
         listType: 3, // completed
         offset: 0
     });
@@ -57,6 +59,7 @@ const test = async () => {
         return;
     }
 
+    console.log('Filtering order');
     let orderIds = [];
     const data = orderList.data.data.details_list
         .filter(order => {
@@ -64,27 +67,29 @@ const test = async () => {
         })
         .reverse()
         .map(order => {
-        const orderId = order.info_card.order_id;
-        const itemsShopee = order.info_card.order_list_cards[0].items;
-        const total = order.info_card.final_total / 100000;
+            const orderId = order.info_card.order_id;
+            const itemsShopee = order.info_card.order_list_cards[0].items;
+            const total = order.info_card.final_total / 100000;
 
-        orderIds.push(orderId);
+            orderIds.push(orderId);
 
-        return {
-            order_id: orderId,
-            invoice_url: `https://shopee.co.id/user/purchase/order/${orderId}`,
-            total_price: total,
-            products: generateProducts(itemsShopee)
-        }
+            return {
+                order_id: orderId,
+                invoice_url: `https://shopee.co.id/user/purchase/order/${orderId}`,
+                total_price: total,
+                products: generateProducts(itemsShopee)
+            }
 
-    })
+        })
 
+    console.log('Get all orders detail');
     const orderDetails = await Promise.all(orderIds.map(orderId => {
         return shopeeMallApi.getOrderDetail({
             orderId
         });
     }));
 
+    console.log('Constructing data...');
     let updatedLastOrderId;
     orderDetails.forEach((od, i) => {
         const purchaseDate = getPurchaseDate(od.data.data.processing_info);
@@ -101,14 +106,17 @@ const test = async () => {
         console.log('No new data');
         return;
     }
+
+    console.log(`Inserting ${data.length} rows`);
     // trigger workflow update google sheets
     await updateTransactionInGoogleSheets(data);
 
 
+    console.log('Update last order id in Pipedream');
     // update last order id in pipedream
     await updatePersonalFinancesDataStores(lastOrderKey, updatedLastOrderId)
 
-    console.log(data);
+    // console.log(data);
 };
 
 test();
