@@ -34,8 +34,7 @@ const test = async () => {
     const { data: db } = await getPersonalFinancesDataStores();
     const lastOrderKey = process.env.PIPEDREAM_DB_SHOPEE_LAST_ORDER_KEY;
     const lastOrderId = db[lastOrderKey];
-
-    // console.log({ lastOrderId });
+    console.log(`Last order id ${lastOrderId}`);
 
     const configuration = new Configuration({
         basePath: 'https://shopee.co.id',
@@ -68,8 +67,13 @@ const test = async () => {
         .reverse()
         .map(order => {
             const orderId = order.info_card.order_id;
-            const itemsShopee = order.info_card.order_list_cards[0].items;
+            const itemsShopee = order.info_card.order_list_cards[0].product_info.item_groups[0].items;
             const total = order.info_card.final_total / 100000;
+            // console.log({
+            //     orderId,
+            //     itemsShopee,
+            //     total
+            // });
 
             orderIds.push(orderId);
 
@@ -116,7 +120,7 @@ const test = async () => {
     // update last order id in pipedream
     await updatePersonalFinancesDataStores(lastOrderKey, updatedLastOrderId)
 
-    // console.log(data);
+    console.log(data);
 };
 
 test();
