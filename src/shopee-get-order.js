@@ -23,10 +23,12 @@ const getPurchaseDate = (processingInfo) => {
     };
 };
 
-const generateProducts = (items) => {
-    return items.map(item => {
-        return item.name;
+const generateProducts = (itemGroups) => {
+    const products = itemGroups.map(itemGroup => {
+        return itemGroup.items[0].name;
     }).join('\n');
+
+    return `[${process.env.PIPEDREAM_WORKFLOW_UPDATE_GOOGLE_SHEETS_SOURCE}] - ${products}`;
 };
 
 const test = async () => {
@@ -49,7 +51,7 @@ const test = async () => {
     console.log('Get order list');
     const orderList = await shopeeMallApi.getOrderList({
         limit: 100,
-        listType: 3, // completed
+        listType: 3, // 3 = selesai, 7 = dikemas, 8 = dikirim
         offset: 0
     });
 
@@ -67,7 +69,7 @@ const test = async () => {
         .reverse()
         .map(order => {
             const orderId = order.info_card.order_id;
-            const itemsShopee = order.info_card.order_list_cards[0].product_info.item_groups[0].items;
+            const itemsShopee = order.info_card.order_list_cards[0].product_info.item_groups;
             const total = order.info_card.final_total / 100000;
             // console.log({
             //     orderId,
