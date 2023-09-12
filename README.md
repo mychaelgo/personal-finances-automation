@@ -51,7 +51,7 @@ List of existing or my custom build library to support my needs for personal fin
 
 ### BCA eStatement parser
 
-Link: WIP
+Link: <https://github.com/mychaelgo/bca-pdf-statement-parser>
 Script to parse eStatement & credit card statement from PDF into JSON
 
 ### BCA mobile banking
